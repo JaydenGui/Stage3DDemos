@@ -30,7 +30,13 @@ package
 	// --------------------------------------
 	import flash.display.Sprite;
 	
+	import starling.core.Starling;
 	import starling.display.MovieClip;
+	import starling.display.Sprite;
+	import starling.events.Event;
+	import starling.extensions.ParticleDesignerPS;
+	import starling.extensions.ParticleSystem;
+	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	
 	import textureAtlas.DynamicAtlas;
@@ -78,6 +84,25 @@ package
 		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "BiplaneMC")] 
 		public static var BiplaneMC:Class;
 		
+		
+		
+		
+		// *******************
+		//  Particles - Created with http://onebyonedesign.com/flash/particleeditor/
+		// *******************
+		/**
+		 * EMBED: The data for the particle system. Complex settings for the #, direction, color, etc... of the particles 
+		 */	
+		[Embed(source="../assets_compiletime/data/particle.pex", mimeType="application/octet-stream")]
+		private static const ParticleDataFile:Class;
+		
+		/**
+		 * EMBED: 
+		 */		
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "CloudMC")] 
+		public static var CloudMC:Class;
+		
+		
 		// *******************
 		//  Audio
 		// *******************
@@ -99,6 +124,16 @@ package
 		 */		
 		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "MoveFlyerSound")] 
 		public static var MoveFlyerSound:Class;
+		
+		// *******************
+		//  Fonts
+		// *******************
+		
+		/**
+		 * EMBED: 
+		 */		
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "MyriadProFont")] 
+		public static var MyriadProFont:Class;
 		
 		
 		
@@ -143,7 +178,8 @@ package
 					checkBounds_boolean);
 				
 				// 3. Create MovieClip From Atlas
-				movieClip = new MovieClip ( myTextureAtlas.getTextures() , 60);
+				var framesPerSecond_uint:int		= 12;		//DEFAULT
+				movieClip = new MovieClip ( myTextureAtlas.getTextures(), framesPerSecond_uint);
 				
 				
 				
@@ -159,6 +195,116 @@ package
 			
 			
 			return movieClip;
+			
+		}
+		
+		
+		/**
+		 * Create a texture (for use in particle systems)
+		 *  
+		 * @param aClass source that has been linked from embedded swf
+		 * @param aFrameNumber_uint
+		 * 
+		 * @return texture
+		 * 
+		 */
+		public static function getNewTextureFromClass (aClass : Class, aFrameNumber_uint : uint) : Texture
+		{
+			
+			//	WE RECREATE A TEXTATLAS FOR *EVERY* CALL (OF THE SAME OBJECT TOO). THIS IS INEFFICIENT. BUT ITS OK FOR NOW.
+			var texture : Texture;
+			try {
+				
+				// 1. Setup Properties
+				var assets_vector_class:Vector.<Class> = new Vector.<Class> ();
+				
+				//
+				assets_vector_class.push (aClass); 	//WARNING - MUST HAVE 2+ 
+				//FRAMES TO AVOID ERRORS
+				
+				//
+				var scaleFactor_num:Number 			= 1;		//DEFAULT
+				var margin_uint:int					= 0;		//DEFAULT
+				var preserveColor_boolean:Boolean 	= true;		//DEFAULT
+				var checkBounds_boolean:Boolean 	= false;	//DEFAULT
+				
+				// 2. Create Atlas From VectorClass
+				var myTextureAtlas : TextureAtlas = DynamicAtlas.fromClassVector (	
+					assets_vector_class, 
+					scaleFactor_num,
+					margin_uint,
+					preserveColor_boolean, 
+					checkBounds_boolean);
+				
+				// 3. Create MovieClip From Atlas
+				var framesPerSecond_uint:int		= 12;		//DEFAULT
+				texture = myTextureAtlas.getTextures()[aFrameNumber_uint]
+				
+				
+				
+			} catch (e:Error) {
+				
+				trace ("ERROR");
+				trace (	"There was an error in the creation of the texture Atlas. ");
+				trace (	"Please check if the dimensions of your clip exceeded the maximun ");
+				trace (	"allowed texture size.");
+				trace ("[[ " + e.message + " ]]");
+				
+			}
+			
+			
+			return texture;
+			
+		}
+
+		
+		
+		/**
+		 *
+		 * 	Create a one-cloude particle system 
+		 * 
+		 * @param aX_num
+		 * @param aY_num
+		 * @param aRotation_num
+		 * @return 
+		 * 
+		 */		
+		public static function createExhaustCloudParticleSystem (aHost_movieclip : MovieClip, aRotation_num : Number) : ParticleSystem
+		{
+			//WE ARE CREATING AN ENTIRE SYSTEM FOR EACH PARTICLE, THIS IS INEFFICIENT, THAT IS OK FOR NOW
+			
+			
+			var particleSystem : ParticleSystem;
+			
+			//	PROPERTIES
+			var texture				: Texture 	= AssetManager.getNewTextureFromClass (AssetManager.CloudMC, 1);		
+			var particleDataFile	:XML 		= XML(new ParticleDataFile());
+			particleSystem				 		= new ParticleDesignerPS(particleDataFile, texture);
+			particleSystem.rotation = aRotation_num;
+
+			//	EVENTS
+			particleSystem.addEventListener(Event.COMPLETE, function (aEvent : Event): void 
+			{
+				//NOT SURE IF THIS WORKS, BUT I SEE MEMORY IS NOT *OBVIOUSLY* LEAKING
+				//WHEN I HAD MANY EMITTERS. FOR NOW I JUST HAVE A FEW, PERMANENT EMITTERS
+				particleSystem.removeFromParent(true);
+			});
+			
+			//	EVENTS
+			particleSystem.addEventListener(Event.ENTER_FRAME, function (aEvent : Event): void 
+			{
+				//	POSITION BEHIND THE TAIL OF THE PLANE
+				particleSystem.x = aHost_movieclip.x + 10*Math.sin(aRotation_num);
+				particleSystem.y = aHost_movieclip.y + aHost_movieclip.height/2;
+			});
+			
+			//	START
+			Starling.juggler.add(particleSystem);
+			particleSystem.start();
+			
+			
+			//
+			return particleSystem;
 			
 		}
 		

@@ -40,7 +40,7 @@ package
 	 * <p>The <code>ClassTemplate</code> class.</p>
 	 * 
 	 */
-    [SWF(width="800", height="600", frameRate="60", backgroundColor="#f7f7f7")]
+    [SWF(width="800", height="600", frameRate="30", backgroundColor="#f7f7f7")]
     public class Startup extends Sprite
     {
 		// --------------------------------------
@@ -91,6 +91,10 @@ package
 			_starling = new Starling (Game, stage);
 			_starling.enableErrorChecking = true;
 			_starling.start();
+			
+			//1 TO 16, LARGER = PRETTIER/SLOWER
+			_starling.antiAliasing = 1;
+			
 			
 			// Add Small Box of Framerate Statistics
 			addChild( new Stats() );
