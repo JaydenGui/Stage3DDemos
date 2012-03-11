@@ -22,13 +22,17 @@
  * OTHER DEALINGS IN THE SOFTWARE.                                      
  */
 //Marks the right margin of code *******************************************************************
-package {
+package com.rmc.projects.flyergamestarlingoop {
 	
 	// --------------------------------------
 	// Imports
 	// --------------------------------------
+	
+	import com.rmc.projects.flyergamestarlingoop.movieclips.Biplane;
+	import com.rmc.projects.flyergamestarlingoop.movieclips.Blimp;
+	import com.rmc.projects.flyergamestarlingoop.movieclips.Flyer;
+	
 	import flash.text.Font;
-	import flash.ui.Keyboard;
 	
 	import flashx.textLayout.formats.TextAlign;
 	
@@ -53,8 +57,32 @@ package {
 		// Properties
 		// --------------------------------------
 		// PUBLIC GETTER/SETTERS
+		/**
+		 *  
+		 */		
+		private var _isPaused_boolean : Boolean;
+		public function get isPaused () 					: Boolean 	{ return _isPaused_boolean; }
+		public function set isPaused (aValue : Boolean) 	: void 		{ _isPaused_boolean = aValue; }
 		
 		// PUBLIC CONST
+		/**
+		 *  DIMENSIONS: 
+		 */	
+		public static const Y_FOR_VICTORY : uint = 30;
+		
+		/**
+		 *  DIMENSIONS: 
+		 */	
+		public static const WIDTH : uint = 800;
+		
+		/**
+		 *  DIMENSIONS: 
+		 */	
+		public static const HEIGHT : uint = 600;
+		
+		
+		
+			
 		
 		// PRIVATE
 		/**
@@ -75,27 +103,27 @@ package {
 		/**
 		 *	MOVIECLIP :  
 		 */		
-		private var _flyerMC : MovieClip;
+		public var flyer : Flyer;
 		
 		/**
 		 *	MOVIECLIP :  
 		 */		
-		private var _blimp1MC : MovieClip;
+		private var _blimp1MC : Blimp;
 		
 		/**
 		 *	MOVIECLIP :  
 		 */		
-		private var _blimp2MC : MovieClip;
+		private var _blimp2MC : Blimp;
 		
 		/**
 		 *	MOVIECLIP :  
 		 */		
-		private var _biplane1MC : MovieClip;
+		private var _biplane1MC : Biplane;
 		
 		/**
 		 *	MOVIECLIP :  
 		 */		
-		private var _biplane2MC : MovieClip;
+		private var _biplane2MC : Biplane;
 		
 		/**
 		 *	PARTICLE SYSTEM :  
@@ -107,17 +135,10 @@ package {
 		 */		
 		private var _particleSystem2:ParticleSystem;
 		
-		/**
-		 *	PARTICLE SYSTEM :  
-		 */		
-		private var _isPaused_boolean:Boolean;
-		
 		
 		// --------------------------------------
 		// Constructor
 		// --------------------------------------
-		
-		
 		
 		/**
 		 * This is the constructor.
@@ -145,19 +166,24 @@ package {
 		// Methods
 		// --------------------------------------
 		//	PUBLIC
-		
-		
-		//	PRIVATE
 		/**
-		 * SETUP : 
+		 * SETUP : This creates the whole Game layout.
+		 * 
+		 * 	RESTART: I do quite a bit of work to allow for 'restarting the game'. It works well. Press Spacebar during gameplay.
+		 * 			**Removing listeners and objects from the stage
+		 * 			**Ensuring there are no duplicate objects (visuals, listeners, etc...)
+		 * 
+		 * 	UPDATE: While my technique is good and educational, I now thing it would be easer
+		 * 			to simply tell Startup.as to remove and reattach the whole game. (maybe or would listeners still exist). TBD...
 		 * 
 		 */	
-		private function _doSetup () : void
+		public function doSetup () : void
 		{
 			
 			//SETUP - WE BREAK THIS UP TO MATCH OTHER VERSIONS OF THIS GAME I CREATED
 			// http://www.rivellomultimediaconsulting.com/flyergame-for-html5/
 			_isPaused_boolean = false;
+			Starling.current.start();
 			_doSetupStage();
 			_doSetupSprites();
 			_doApplyEffects();
@@ -165,6 +191,7 @@ package {
 			_doStartGameplay();
 		}
 		
+		//	PRIVATE
 		/**
 		 * SETUP : 
 		 * 
@@ -205,8 +232,6 @@ package {
 			if (stage.hasEventListener(KeyboardEvent.KEY_UP)) {
 				stage.removeEventListeners(KeyboardEvent.KEY_UP);
 			}
-			stage.addEventListener(KeyboardEvent.KEY_DOWN,  _onKeyboardKeyDown)
-			stage.addEventListener(KeyboardEvent.KEY_UP, 	_onKeyboardKeyUp)
 			
 			// SCORE
 			_setScore(0);
@@ -220,8 +245,8 @@ package {
 		{
 			
 			//REMOVE LISTENERS (IF WE ARE RESTARTING)
-			if (_flyerMC && _flyerMC.hasEventListener(Event.ENTER_FRAME) ) {
-				_flyerMC.removeEventListeners(Event.ENTER_FRAME);
+			if (flyer && flyer.hasEventListener(Event.ENTER_FRAME) ) {
+				flyer.removeEventListeners(Event.ENTER_FRAME);
 			}
 			
 			if (_blimp1MC && _blimp1MC.hasEventListener(Event.ENTER_FRAME) ) {
@@ -245,41 +270,45 @@ package {
 			Starling.current.juggler.purge()
 			
 			//	CREATE BACKGROUND
-			_backgroundMC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BackgroundMC);
+			_backgroundMC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BackgroundMC, MovieClip, -2);
 			_backgroundMC.x = 0;
 			_backgroundMC.y = 0;
 			addChild(_backgroundMC);
 
 			
 			//	CREATE BLIMPS
-			_blimp1MC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BlimpMC);
+			_blimp1MC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BlimpMC, Blimp );
 			_blimp1MC.x = 650;
 			_blimp1MC.y = 120;
+			_blimp1MC.speed = 5;
 			addChild(_blimp1MC);
 			
-			_blimp2MC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BlimpMC);
+			_blimp2MC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BlimpMC, Blimp );
 			_blimp2MC.x = 700;
 			_blimp2MC.y = 350;
 			_blimp2MC.scaleX = -1;
+			_blimp2MC.speed = -7;
 			addChild(_blimp2MC);
 			
 			//	CREATE BIPLANES
-			_biplane1MC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BiplaneMC);
+			_biplane1MC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BiplaneMC,  Biplane );
 			_biplane1MC.x = 200;
 			_biplane1MC.y = 210;
+			_biplane1MC.speed = 2;
 			addChild(_biplane1MC);
 			
-			_biplane2MC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BiplaneMC);
+			_biplane2MC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.BiplaneMC,  Biplane );
 			_biplane2MC.x = 550;
 			_biplane2MC.y = 420;
+			_biplane2MC.speed = -10
 			_biplane2MC.scaleX = -1;
 			addChild(_biplane2MC);
 			
 			//	CREATE FLYER
-			_flyerMC = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.FlyerMC);
-			_flyerMC.x = 250;
-			_flyerMC.y = 525;
-			addChild(_flyerMC);
+			flyer = AssetManager.getNewStarlingMovieClipFromClass (AssetManager.FlyerMC,  Flyer );
+			flyer.x = 250;
+			flyer.y = 525;
+			addChild(flyer);
 			
 			//ADD TEXTFIELDS ON TOP
 			addChild(_instructions_textfield);
@@ -319,17 +348,7 @@ package {
 		 */	
 		private function _doSetupGameLoop () : void
 		{
-			//REQUIRED FOR AUTOMATICALLY ADVANCING ITS ANIMATION FRAMES
-			//Starling.juggler.add(_flyerMC); [[ WE DON'T WANT IT TO '.play()' so don't use it ]]
-			
-			//REQUIRED FOR MOVING (X,Y) AROUND THE SCREEN [[ WE DO WANT THAT! ]]
-			//	FYI, adding ENTER_FRAME, automatically adds to the Juggler
-			//
-			_blimp1MC.addEventListener(Event.ENTER_FRAME, 	_moveLeft);
-			_blimp2MC.addEventListener(Event.ENTER_FRAME, 	_moveRight);
-			_biplane1MC.addEventListener(Event.ENTER_FRAME, _moveRight);
-			_biplane2MC.addEventListener(Event.ENTER_FRAME, _moveLeft);
-			
+
 		}
 		
 		
@@ -369,7 +388,7 @@ package {
 		 * Show 'You Win' and clean up the screen
 		 * 
 		 */	
-		private function _youWin() : void {
+		public function youWin() : void {
 			
 			//MESSAGE
 			trace("You Won the Game!");
@@ -391,7 +410,7 @@ package {
 		 * Show 'You Lose' and clean up the screen
 		 * 
 		 */	
-		private function _youLose() : void {
+		public function youLose() : void {
 			
 			//MESSAGE
 			trace("You Lost the Game!");
@@ -418,13 +437,9 @@ package {
 			
 			//END GAME
 			_isPaused_boolean = true;
+			Starling.current.stop();
 			Starling.juggler.remove(_particleSystem1);
 			Starling.juggler.remove(_particleSystem2);
-			_blimp1MC.removeEventListeners		(Event.ENTER_FRAME);
-			_blimp2MC.removeEventListeners		(Event.ENTER_FRAME);
-			_biplane1MC.removeEventListeners	(Event.ENTER_FRAME);
-			_biplane2MC.removeEventListeners	(Event.ENTER_FRAME); //NOTE: removeEventListener() [without the 's'] appears to do nothing
-			
 			
 		}
 		
@@ -443,131 +458,9 @@ package {
 		private function _onAddedToStage(aEvent:Event) : void 
 		{
 			//	SETUP
-			_doSetup();
+			doSetup();
 			
 		}
-		
-		
-		/**
-		 * Handles the Event: <code>KeyboardEvent.KEY_DOWN</code>.
-		 * 
-		 * @param aEvent <code>KeyboardEvent</code> The incoming aEvent payload.
-		 *  
-		 * @return void
-		 * 
-		 */
-		private function _onKeyboardKeyDown(aEvent:KeyboardEvent) : void 
-		{
-			//REACT TO 4 ARROW KEYS
-			if (!_isPaused_boolean) {
-				
-				if (aEvent.keyCode == Keyboard.UP) {
-					_flyerMC.y = _flyerMC.y - 30;
-					AssetManager.PlayMoveFlyerSound();
-				} else if (aEvent.keyCode == Keyboard.DOWN) {
-					_flyerMC.y = _flyerMC.y + 30;
-					AssetManager.PlayMoveFlyerSound();
-				} else if (aEvent.keyCode == Keyboard.LEFT) {
-					_flyerMC.x = _flyerMC.x - 30;
-					AssetManager.PlayMoveFlyerSound();
-				} else if (aEvent.keyCode == Keyboard.RIGHT) {
-					_flyerMC.x = _flyerMC.x + 30;
-					AssetManager.PlayMoveFlyerSound();
-				} 
-				
-				
-				//WIN WHEN YOU REACH THE TOP OF SCREEN
-				if (_flyerMC.y < 30) {
-					_youWin();
-				}
-				
-				//ANIMATE A LITTLE
-				_flyerMC.currentFrame = 0;
-				
-			}
-			
-			//MUST WORK, EVEN AFTER THE GAME IS OVER
-			if (aEvent.keyCode == Keyboard.SPACE) {
-				_doSetup();
-			}
-			
-		}
-		
-		
-		/**
-		 * Handles the Event: <code>KeyboardEvent.KEY_UP</code>.
-		 * 
-		 * @param aEvent <code>KeyboardEvent</code> The incoming aEvent payload.
-		 *  
-		 * @return void
-		 * 
-		 */
-		private function _onKeyboardKeyUp(aEvent:KeyboardEvent) : void 
-		{
-			
-			//ANIMATE A LITTLE
-			_flyerMC.currentFrame = 1;
-		};
-		
-		
-		////////////////////////////////////////////////////
-		//	ENTER_FRAME CODE
-		////////////////////////////////////////////////////
-		/**
-		 * Handles the Event: <code>Event.ENTER_FRAME</code>.
-		 * 
-		 * @param aEvent <code>Event</code> The incoming aEvent payload.
-		 *  
-		 * @return void
-		 * 
-		 */
-		private function _moveRight (aEvent:Event) : void 
-		{
-			
-			//REFERENCE TO ENEMY
-			var enemy_mc:MovieClip = aEvent.target as MovieClip;
-			
-			//MOVE THE ENEMY FORWARD
-			enemy_mc.x = enemy_mc.x + 10;
-			
-			//RESET POSITION IF OFFSCREEN
-			if (enemy_mc.x > 800) {
-				enemy_mc.x = -100;
-			}
-			
-			//COLLISION DETECTION 'DID ENEMY HIT FLYER?'
-			if (enemy_mc.getBounds(enemy_mc.parent).intersects(_flyerMC.getBounds(_flyerMC.parent)) ) {
-				_youLose()
-			}
-			
-		}
-		/**
-		 * Handles the Event: <code>Event.ENTER_FRAME</code>.
-		 * 
-		 * @param aEvent <code>Event</code> The incoming aEvent payload.
-		 *  
-		 * @return void
-		 * 
-		 */
-		private function _moveLeft (aEvent:Event) : void {	
-			
-			//REFERENCE TO ENEMY
-			var enemy_mc:MovieClip = aEvent.target as MovieClip;
-			
-			//MOVE THE ENEMY FORWARD
-			enemy_mc.x = enemy_mc.x - 7
-			
-			//RESET POSITION IF OFFSCREEN
-			if (enemy_mc.x < -100) {
-				enemy_mc.x = 800;
-			}
-			
-			//COLLISION DETECTION 'DID ENEMY HIT FLYER?'
-			if (enemy_mc.getBounds(enemy_mc.parent).intersects(_flyerMC.getBounds(_flyerMC.parent)) ) {
-				_youLose()
-			}
-		};
-		
 		
 		
 		

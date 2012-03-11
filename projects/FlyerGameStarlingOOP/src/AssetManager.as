@@ -22,14 +22,20 @@
  * OTHER DEALINGS IN THE SOFTWARE.                                      
  */
 //Marks the right margin of code *******************************************************************
-package 
+package  
 {
 	
 	// --------------------------------------
 	// Imports
 	// --------------------------------------
+	import com.rmc.projects.flyergamestarlingoop.movieclips.Enemy;
+	import com.rmc.projects.flyergamestarlingoop.movieclips.Flyer;
+	
+	import flash.display.Sprite;
+	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
+	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.extensions.ParticleDesignerPS;
 	import starling.extensions.ParticleSystem;
@@ -60,25 +66,25 @@ package
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "BackgroundMC")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "BackgroundMC")] 
 		public static var BackgroundMC:Class;
 		
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "FlyerMC")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "FlyerMC")] 
 		public static var FlyerMC:Class;
 		
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "BlimpMC")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "BlimpMC")] 
 		public static var BlimpMC:Class;
 		
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "BiplaneMC")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "BiplaneMC")] 
 		public static var BiplaneMC:Class;
 		
 		
@@ -96,7 +102,7 @@ package
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "CloudMC")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "CloudMC")] 
 		public static var CloudMC:Class;
 		
 		
@@ -107,19 +113,19 @@ package
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "WinGameSound")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "WinGameSound")] 
 		public static var WinGameSound:Class;
 		
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "LoseGameSound")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "LoseGameSound")] 
 		public static var LoseGameSound:Class;
 		
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "MoveFlyerSound")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "MoveFlyerSound")] 
 		public static var MoveFlyerSound:Class;
 		
 		// *******************
@@ -129,7 +135,7 @@ package
 		/**
 		 * EMBED: 
 		 */		
-		[Embed(source = '../assets_compiletime/fla/FlyerGameStarling_Assets_v1.swf', symbol = "MyriadProFont")] 
+		[Embed(source = '../assets_compiletime/fla/FlyerGameStarlingOOP_Assets_v1.swf', symbol = "MyriadProFont")] 
 		public static var MyriadProFont:Class;
 		
 		
@@ -146,25 +152,25 @@ package
 		 * @return the created clip
 		 * 
 		 */
-		public static function getNewStarlingMovieClipFromClass (aClass : Class) : MovieClip
+		public static function getNewStarlingMovieClipFromClass (aSourceClass : Class, aDestinationClass : Class, aMargin_uint : uint = 0) : *
 		{
 			
 			//	WE RECREATE A TEXTATLAS FOR *EVERY* CALL (OF THE SAME OBJECT TOO). THIS IS INEFFICIENT. BUT ITS OK FOR NOW.
-			var movieClip : MovieClip;
+			var destinationInstance : *;
 			try {
 				
 				// 1. Setup Properties
 				var assets_vector_class:Vector.<Class> = new Vector.<Class> ();
 				
 				//
-				assets_vector_class.push (aClass); 	//WARNING - MUST HAVE 2+ 
+				assets_vector_class.push (aSourceClass); 	//WARNING - MUST HAVE 2+ 
 				//FRAMES TO AVOID ERRORS
 				
 				//
-				var scaleFactor_num:Number 			= 1;		//DEFAULT
-				var margin_uint:int					= 0;		//DEFAULT
-				var preserveColor_boolean:Boolean 	= true;		//DEFAULT
-				var checkBounds_boolean:Boolean 	= false;	//DEFAULT
+				var scaleFactor_num:Number 			= 1;			//DEFAULT
+				var margin_uint:int					= aMargin_uint;	//0 == DEFAULT
+				var preserveColor_boolean:Boolean 	= true;			//DEFAULT
+				var checkBounds_boolean:Boolean 	= false;		//DEFAULT
 				
 				// 2. Create Atlas From VectorClass
 				var myTextureAtlas : TextureAtlas = DynamicAtlas.fromClassVector (	
@@ -176,8 +182,7 @@ package
 				
 				// 3. Create MovieClip From Atlas
 				var framesPerSecond_uint:int		= 12;		//DEFAULT
-				movieClip = new MovieClip ( myTextureAtlas.getTextures(), framesPerSecond_uint);
-				
+				destinationInstance = new aDestinationClass ( myTextureAtlas.getTextures(), framesPerSecond_uint);
 				
 				
 			} catch (e:Error) {
@@ -191,7 +196,7 @@ package
 			}
 			
 			
-			return movieClip;
+			return destinationInstance;
 			
 		}
 		

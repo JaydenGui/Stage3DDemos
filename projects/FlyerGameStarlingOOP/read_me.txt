@@ -8,6 +8,8 @@
  //		This is a demonstration of the Starling Framework (http://gamua.com/starling/).
  //		It is a simple, yet complete game.
  //
+ //		It features OOP (Object Oriented Programming) style.
+ //
  
  //	PROJECT SETUP DETAILS
  //		TYPE		: Flash Builder ActionScript Only Project

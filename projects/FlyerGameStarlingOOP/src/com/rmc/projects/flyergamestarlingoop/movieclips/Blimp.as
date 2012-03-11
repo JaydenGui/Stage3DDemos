@@ -22,29 +22,33 @@
  * OTHER DEALINGS IN THE SOFTWARE.                                      
  */
 //Marks the right margin of code *******************************************************************
-package 
+package  com.rmc.projects.flyergamestarlingoop.movieclips
 {
+	
 	// --------------------------------------
 	// Imports
 	// --------------------------------------
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
 	
-	import net.hires.debug.Stats;
+	import starling.textures.Texture;
 	
-	import starling.core.Starling;
-    
+	
+	
+	// --------------------------------------
+	// Metadata
+	// --------------------------------------
+	
+	
 	// --------------------------------------
 	// Class
 	// --------------------------------------
 	/**
-	 * <p>The <code>ClassTemplate</code> class.</p>
+	 * <p>The <code>ClassTemplate</code> class is ...</p>
 	 * 
 	 */
-    [SWF(width="800", height="600", frameRate="30", backgroundColor="#f7f7f7")]
-    public class Startup extends Sprite
-    {
+	public class Blimp extends Enemy
+	{
+	
+		
 		// --------------------------------------
 		// Properties
 		// --------------------------------------
@@ -53,7 +57,6 @@ package
 		// PUBLIC CONST
 		
 		// PRIVATE
-        private var _starling:Starling;
 		
 		// --------------------------------------
 		// Constructor
@@ -62,10 +65,10 @@ package
 		 * This is the constructor.
 		 * 
 		 */
-        public function Startup()
-        {
-			// SUPER
-			super();
+		public function Blimp(aTextures_vector_texture:Vector.<Texture>, aFramesPerSecond_num : Number=12)
+		{
+			//SUPER
+			super(aTextures_vector_texture, aFramesPerSecond_num );
 			
 			// EVENTS
 			
@@ -74,34 +77,22 @@ package
 			// PROPERTIES
 			
 			// METHODS
-			_init();
 			
 		}
 		
-		/**
-		 * Initialize
-		 * 
-		 */		
-		private function _init () : void
-		{
-			
-			// Align the Flash Stage 
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align 	= StageAlign.TOP_LEFT;
-			
-			// Setup The 'Engine'
-			_starling = new Starling (Game, stage);
-			_starling.enableErrorChecking = true;
-			_starling.start();
-			
-			//1 TO 16, LARGER = PRETTIER/SLOWER
-			_starling.antiAliasing = 1;
-			
-			
-			// Add Small Box of Framerate Statistics
-			addChild( new Stats() );
-			
-
-        }
-    }
+		
+		// --------------------------------------
+		// Methods
+		// --------------------------------------
+		// PUBLIC
+		
+		// PRIVATE
+		
+		// --------------------------------------
+		// Event Handlers
+		// --------------------------------------
+		
+		
+	}
 }
+

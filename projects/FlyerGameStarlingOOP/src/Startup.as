@@ -27,9 +27,12 @@ package
 	// --------------------------------------
 	// Imports
 	// --------------------------------------
+	import com.rmc.projects.flyergamestarlingoop.Game;
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
+	import flash.filters.DropShadowFilter;
 	
 	import net.hires.debug.Stats;
 	
@@ -97,9 +100,10 @@ package
 			//1 TO 16, LARGER = PRETTIER/SLOWER
 			_starling.antiAliasing = 1;
 			
-			
 			// Add Small Box of Framerate Statistics
-			addChild( new Stats() );
+			var stats : Stats =  new Stats();
+			stats.filters = [new DropShadowFilter()]
+			addChild( stats );
 			
 
         }
