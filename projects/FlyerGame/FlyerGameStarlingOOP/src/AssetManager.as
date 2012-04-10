@@ -152,7 +152,7 @@ package
 		 * @return the created clip
 		 * 
 		 */
-		public static function getNewStarlingMovieClipFromClass (aSourceClass : Class, aDestinationClass : Class, aMargin_uint : uint = 0) : *
+		public static function getNewStarlingMovieClipFromClass (aSourceClass : Class, aDestinationClass : Class, aMargin_int : int = 0) : *
 		{
 			
 			//	WE RECREATE A TEXTATLAS FOR *EVERY* CALL (OF THE SAME OBJECT TOO). THIS IS INEFFICIENT. BUT ITS OK FOR NOW.
@@ -168,7 +168,7 @@ package
 				
 				//
 				var scaleFactor_num:Number 			= 1;			//DEFAULT
-				var margin_uint:int					= aMargin_uint;	//0 == DEFAULT
+				var margin_uint:int					= aMargin_int;	//0 == DEFAULT
 				var preserveColor_boolean:Boolean 	= true;			//DEFAULT
 				var checkBounds_boolean:Boolean 	= false;		//DEFAULT
 				
