@@ -97,7 +97,6 @@ package
 			//1 TO 16, LARGER = PRETTIER/SLOWER
 			_starling.antiAliasing = 1;
 			
-			
 			// Add Small Box of Framerate Statistics
 			addChild( new Stats() );
 			

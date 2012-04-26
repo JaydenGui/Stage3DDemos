@@ -175,7 +175,7 @@ package {
 				var scaleFactor_num:Number 			= 1;		//DEFAULT
 				var margin_uint:int					= 0;		//DEFAULT
 				var preserveColor_boolean:Boolean 	= true;		//DEFAULT
-				var checkBounds_boolean:Boolean 	= false;	//DEFAULT
+				var checkBounds_boolean:Boolean 		= false;	//DEFAULT
 				
 				// 2. Create Atlas From VectorClass
 				var myTextureAtlas : TextureAtlas = DynamicAtlas.fromClassVector (	

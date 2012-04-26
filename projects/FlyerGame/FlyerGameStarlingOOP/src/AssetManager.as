@@ -28,14 +28,8 @@ package
 	// --------------------------------------
 	// Imports
 	// --------------------------------------
-	import com.rmc.projects.flyergamestarlingoop.movieclips.Enemy;
-	import com.rmc.projects.flyergamestarlingoop.movieclips.Flyer;
-	
-	import flash.display.Sprite;
-	
 	import starling.core.Starling;
 	import starling.display.MovieClip;
-	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.extensions.ParticleDesignerPS;
 	import starling.extensions.ParticleSystem;

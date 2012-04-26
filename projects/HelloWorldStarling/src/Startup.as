@@ -90,7 +90,7 @@ package
 			// Setup The 'Engine'
 			_starling = new Starling (Game, stage);
 			_starling.enableErrorChecking = false;	//true is slower, but may help debugging
-			_starling.antiAliasing = 4;				//1 (fast) to 16 (slow, but pretty)
+			_starling.antiAliasing = 0;				//0 (fast) to 16 (slow, but pretty)
 			_starling.start();
 			
 			// Add Small Box of Framerate Statistics

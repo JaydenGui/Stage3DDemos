@@ -178,10 +178,10 @@ package {
 			// SCORE
 			var width_int 		: int 		= 300; 
 			var height_int 		: int 		= 80; 
-			var text_str		: String 	= ""; 
+			var text_str			: String 	= ""; 
 			var fontName_str 	: String 	= myriadProFont.fontName;	//"Verdana" = DEFAULT
-			var fontSize_num	: Number  	= 40;			//DEFAULT
-			var color_uint		: uint 		= 0;			//DEFAULT
+			var fontSize_num		: Number  	= 40;			//DEFAULT
+			var color_uint		: uint 		= 0;				//DEFAULT
 			var isBold_boolean	: Boolean   = false; 		//DEFAULT
 			_score_textfield = new TextField (	width_int, height_int, text_str, fontName_str, 
 				fontSize_num, color_uint, isBold_boolean); //add to stage later ('above' the z of the background)
